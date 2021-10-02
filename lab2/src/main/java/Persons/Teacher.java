@@ -11,6 +11,7 @@ public class Teacher extends Person {
         this.subject = subject;
         this.workingHoursFrom = workingHoursFrom;
         this.workingHoursTo = workingHoursTo;
+
     }
 
     public Subjects getSubject() {
