@@ -26,13 +26,13 @@ public abstract class Person {
     }
 
     private String fullName;
-    private int dateOfBirth;
+    private int yearOfBirth;
     private String telephoneNumber;
     private int Id = -1;                // gets the Id only after writing to the file (or if Person readed from file)
 
-    public Person(String fullName, int dateOfBirth, String telephoneNumber) throws Exception {
+    public Person(String fullName, int yearOfBirth, String telephoneNumber) throws Exception {
         this.fullName = fullName;
-        this.dateOfBirth = dateOfBirth;
+        this.yearOfBirth = yearOfBirth;
         this.telephoneNumber = telephoneNumber;
     }
 
@@ -44,8 +44,8 @@ public abstract class Person {
         return fullName;
     }
 
-    public int getDateOfBirth() {
-        return dateOfBirth;
+    public int getYearOfBirth() {
+        return yearOfBirth;
     }
 
     public int getID() {
@@ -54,6 +54,18 @@ public abstract class Person {
 
     public void setId(int Id){
         this.Id = Id;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setYearOfBirth(int yearOfBirth) {
+        this.yearOfBirth = yearOfBirth;
+    }
+
+    public void setTelephoneNumber(String telephoneNumber) {
+        this.telephoneNumber = telephoneNumber;
     }
 
 }

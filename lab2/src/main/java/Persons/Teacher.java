@@ -3,14 +3,12 @@ package Persons;
 public class Teacher extends Person {
 
     private Subjects subject;
-    private double workingHoursFrom;
-    private double workingHoursTo;
+    private String workingHours;
 
-    public Teacher(String fullName, int dateOfBirth, String telephoneNumber, Subjects subject, double workingHoursFrom, double workingHoursTo) throws Exception {
-        super(fullName, dateOfBirth, telephoneNumber);
+    public Teacher(String fullName, int yearOfBirth, String telephoneNumber, Subjects subject, String workingHours) throws Exception {
+        super(fullName, yearOfBirth, telephoneNumber);
         this.subject = subject;
-        this.workingHoursFrom = workingHoursFrom;
-        this.workingHoursTo = workingHoursTo;
+        this.workingHours = workingHours;
 
     }
 
@@ -18,11 +16,16 @@ public class Teacher extends Person {
         return subject;
     }
 
-    public double getWorkingHoursFrom() {
-        return workingHoursFrom;
+    public String getWorkingHours() {
+        return workingHours;
     }
 
-    public double getWorkingHoursTo() {
-        return workingHoursTo;
+    public void setWorkingHours(String workingHours) {
+        this.workingHours = workingHours;
     }
+
+    public void setSubject(Subjects subject) {
+        this.subject = subject;
+    }
+
 }

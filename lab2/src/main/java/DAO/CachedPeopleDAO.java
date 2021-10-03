@@ -18,7 +18,7 @@ public class CachedPeopleDAO implements Dao{
     String pathToDirectory;
     String pathToIdsfile;
 
-    CachedPeopleDAO(String pathToIdsfile, String pathToDirectory){
+    public CachedPeopleDAO(String pathToIdsfile, String pathToDirectory){
         this.pathToDirectory = pathToDirectory;
         this.pathToIdsfile = pathToIdsfile;
     }

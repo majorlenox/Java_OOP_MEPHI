@@ -4,6 +4,7 @@ import Persons.Person;
 import Persons.Student;
 import Persons.Teacher;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jdk.internal.loader.AbstractClassLoaderValue;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -16,7 +17,7 @@ public class PeopleDAO implements Dao {
     String pathToDirectory;
     String pathToIdsfile;
 
-    PeopleDAO(String pathToIdsfile, String pathToDirectory){
+    public PeopleDAO(String pathToIdsfile, String pathToDirectory){
         this.pathToDirectory = pathToDirectory;
         this.pathToIdsfile = pathToIdsfile;
     }
