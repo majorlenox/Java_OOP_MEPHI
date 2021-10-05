@@ -1,3 +1,4 @@
+package Management;
 
 import DAO.CachedPeopleDAO;
 import DAO.Dao;
@@ -12,7 +13,7 @@ public class PeopleService {
 
     private static Dao psDao;
 
-    static Student createStudent () throws Exception {
+    static Student createStudent() throws Exception {
 
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the student's full name");
@@ -23,23 +24,35 @@ public class PeopleService {
         System.out.println("Enter the student's phone number");
         String telephoneNumber = sc.nextLine();
 
+        System.out.println("Enter which subjects the student is studying(in one line)");
+        System.out.println("Available subjects:");
+        for (Person.Subjects sub : Person.Subjects.values()) {
+            System.out.print(sub.name() + " ");
+        }
+        System.out.println();
+        String inputLine = sc.nextLine();
+        HashSet<Person.Subjects> subjects = new HashSet<Person.Subjects>();
+        inputLine = inputLine.toUpperCase();
+        for (Person.Subjects sub : Person.Subjects.values()) {
+            if (inputLine.contains(sub.name())) {
+                subjects.add(sub);
+            }
+        }
         System.out.println("Enter the average grades for the study Subjects, format = \"ALGEBRA 4,6\"");
         HashMap<Person.Subjects, Double> grades = new HashMap<>();
-        // Change with no studySubjects
-        for (Person.Subjects sub : studySubjects){
-            System.out.print(sub.name()+" ");
-            double grade;
+        for (Person.Subjects sub : subjects) {
+            System.out.print(sub.name() + " ");
             while (true) {
                 try {
-                    grade = sc.nextDouble();
+                    grades.put(sub, sc.nextDouble());
                     break;
-                }catch (InputMismatchException ime){
-                    System.out.println("Incorrect format! Try again\n for example: \"1,25\"");
-                    sc.nextLine();
+                } catch (InputMismatchException ime) {
+                    System.out.println("Incorrect grade! Please follow format, example = 3,7");
                 }
             }
-            grades.put(sub, grade);
+            System.out.println();
         }
+
         sc.nextLine();
         Student student = new Student(fullName, yearOfBirth, telephoneNumber, grades);
 
@@ -50,7 +63,7 @@ public class PeopleService {
         return student;
     }
 
-    static Teacher createTeacher () throws Exception {
+    static Teacher createTeacher() throws Exception {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the teacher's full name");
         String fullName = sc.nextLine();
@@ -60,7 +73,7 @@ public class PeopleService {
         System.out.println("Enter the teacher's phone number");
         String telephoneNumber = sc.nextLine();
         System.out.print("Enter which subject the teacher teaches\nSubjects: ");
-        for (Person.Subjects sub : Person.Subjects.values()){
+        for (Person.Subjects sub : Person.Subjects.values()) {
             System.out.print(sub.name() + " ");
         }
         System.out.println();
@@ -73,20 +86,20 @@ public class PeopleService {
         return teacher;
     }
 
-    static Person getAndChangePersonFromId(int Id)  {
+    static Person getAndChangePersonFromId(int Id) {
         checkAndSetPsDao();
         Person person;
         try {
             person = psDao.readPerson(Id);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
         int c;
         Scanner sc = new Scanner(System.in);
-        while ((c = changeMenu(person)) != 0){
+        while ((c = changeMenu(person)) != 0) {
 
-            switch (c){
+            switch (c) {
                 case 1:
                     System.out.println("Enter new full name:");
                     person.setFullName(sc.nextLine());
@@ -100,19 +113,19 @@ public class PeopleService {
                     person.setTelephoneNumber(sc.nextLine());
                     break;
                 case 4:
-                    if (person.getClass() == Student.class){
-                        updateListOfSubjects((Student)person);
-                    }else{
-                        if (person.getClass() == Teacher.class){
-                         Person.Subjects sub = enterTeachersSubject();
-                         ((Teacher) person).setSubject(sub);
+                    if (person.getClass() == Student.class) {
+                        //updateListOfSubjects((Student) person);
+                    } else {
+                        if (person.getClass() == Teacher.class) {
+                            Person.Subjects sub = enterTeachersSubject();
+                            ((Teacher) person).setSubject(sub);
                         }
                     }
                 case 5:
-                    if (person.getClass() == Student.class){
-                        updateGrades((Student)person);
-                    }else{
-                        if (person.getClass() == Teacher.class){
+                    if (person.getClass() == Student.class) {
+                        updateGrades((Student) person);
+                    } else {
+                        if (person.getClass() == Teacher.class) {
                             Person.Subjects sub = enterTeachersSubject();
                             ((Teacher) person).setSubject(sub);
                         }
@@ -124,15 +137,15 @@ public class PeopleService {
         return person;
     }
 
-    private static void checkAndSetPsDao(){
-        if (psDao == null){
+    private static void checkAndSetPsDao() {
+        if (psDao == null) {
             Scanner sc = new Scanner(System.in);
             System.out.println("Enter the path to the file ids.txt (if it is not there, then it will be created)");
             String pathToIdsfile = sc.nextLine();
             System.out.println("Enter the path to the person's file storage location");
             String pathToDirectory = sc.nextLine();
             System.out.println("Choose an implementation of peopleDAO\n1 - PeopleDAO\n2 - CachedPeopleDAO");
-            if (sc.nextInt() == 2){
+            if (sc.nextInt() == 2) {
                 psDao = new CachedPeopleDAO(pathToIdsfile, pathToDirectory);
             } else {
                 psDao = new PeopleDAO(pathToIdsfile, pathToDirectory);
@@ -140,13 +153,13 @@ public class PeopleService {
         }
     }
 
-    private static int changeMenu(Person person){
+    private static int changeMenu(Person person) {
         showPerson(person);
-        if (person.getClass() == Student.class){
+        if (person.getClass() == Student.class) {
             System.out.println("Select what you want to change, or save changes");
             System.out.println("0 - Save changes and quit\n1 - Full name\n2 - Year of birth\n3 - Telephone number\n" +
-                    "4 - List of subjects\n" + "5 - Grades");
-        }else{
+                    "4 - Grades");
+        } else {
             System.out.println("Select what you want to change, or save changes");
             System.out.println("0 - Save changes and quit\n1 - Full name\n2 - Year of birth\n3 - Telephone number\n" +
                     "4 - Subject\n5 - Working from ");
@@ -160,7 +173,7 @@ public class PeopleService {
             System.out.print("Full name: " + person.getFullName() + "\nYear of birth:" + person.getYearOfBirth() +
                     "\nTelephone number: " + person.getTelephoneNumber() + "\nID: " + person.getID() + "\nGrades :");
             int i = 0;  //line break
-            for (Person.Subjects sub : ((Student) person).getStudySubjects()) {
+            for (Person.Subjects sub : (((Student) person).getGrades()).keySet()) {
                 System.out.print(sub + " " + ((Student) person).getGrades().get(sub));
                 if (i % 3 == 0) {
                     System.out.println();
@@ -178,40 +191,41 @@ public class PeopleService {
         }
     }
 
-    private static void updateListOfSubjects(Student student){
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter(in one line!) the subjects the student is studying (from the list" +
-                " of subjects)\nSubjects: ");
-        for (Person.Subjects sub : Person.Subjects.values()){
-            System.out.print(sub.name() + " ");
-        }
-        System.out.println();
-        String ss = sc.nextLine();
-        HashSet<Person.Subjects> studySubjects = new HashSet<>();
-        ss = ss.toUpperCase();
-        for (Person.Subjects sub : Person.Subjects.values()){
-            if (ss.contains(sub.name())){ studySubjects.add(sub);}
-        }
-        student.setStudySubjects(studySubjects);
-
-        // delete and add new positions in grades
-        boolean f = false;
-        for (Person.Subjects sub : Person.Subjects.values()){
-            if ((student.getGrades().get(sub) == null)&&(studySubjects.contains(sub))){
-                student.getGrades().put(sub, 0.0);
-                f = true;
+    /*
+        private static void updateListOfSubjects(Student student){
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Enter(in one line!) the subjects the student is studying (from the list" +
+                    " of subjects)\nSubjects: ");
+            for (Person.Subjects sub : Person.Subjects.values()){
+                System.out.print(sub.name() + " ");
             }
-            if ((student.getGrades().get(sub) != null)&&(!studySubjects.contains(sub))){
-                student.getGrades().remove(sub);
+            System.out.println();
+            String ss = sc.nextLine();
+            HashSet<Person.Subjects> studySubjects = new HashSet<>();
+            ss = ss.toUpperCase();
+            for (Person.Subjects sub : Person.Subjects.values()){
+                if (ss.contains(sub.name())){ studySubjects.add(sub);}
             }
-        }
-        if (f) {System.out.println("The student has ungraded subjects! Add grades with option \"5 - Grades\" in menu");}
-    }
+            student.setStudySubjects(studySubjects);
 
-    private static Person.Subjects enterTeachersSubject(){
+            // delete and add new positions in grades
+            boolean f = false;
+            for (Person.Subjects sub : Person.Subjects.values()){
+                if ((student.getGrades().get(sub) == null)&&(studySubjects.contains(sub))){
+                    student.getGrades().put(sub, 0.0);
+                    f = true;
+                }
+                if ((student.getGrades().get(sub) != null)&&(!studySubjects.contains(sub))){
+                    student.getGrades().remove(sub);
+                }
+            }
+            if (f) {System.out.println("The student has ungraded subjects! Add grades with option \"5 - Grades\" in menu");}
+        }
+    */
+    private static Person.Subjects enterTeachersSubject() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter which subject the teacher teaches\nSubjects: ");
-        for (Person.Subjects sub : Person.Subjects.values()){
+        for (Person.Subjects sub : Person.Subjects.values()) {
             System.out.print(sub.name() + " ");
         }
         System.out.println();
@@ -229,31 +243,55 @@ public class PeopleService {
         return Person.Subjects.valueOf(subject.toUpperCase());
     }
 
-    private static void updateGrades(Student student){
+    private static void updateGrades(Student student) {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Select the subject for which you want to change the grade, or type 0 - quit");
-        int i = 1;
-        System.out.println("0 - quit");
-        for (Person.Subjects sub : student.getStudySubjects()){
-            System.out.println(i + " - " + sub.name() + " " + student.getGrades().get(sub));
-            i++;
+        System.out.println("Choose an action:\n0. Quit\n1. Change subjects\n2. Change grades");
+
+        switch (chooseAction(2)){
+            default:
+                return;
+            case 1:
+                System.out.println("Choose an action:\n0. Quit\n1. Add subjects\n2. Delete subjects");
+                switch (chooseAction(2)){
+                    default:
+                        break;
+                    case 1:
+                        addSubjects(student);
+                        break;
+                    case 2:
+
+                        break;
+                }
+                break;
+            case 2:
+
+                break;
         }
+
+
+    }
+
+    private static void addSubjects(Student student){
+        System.out.println("Enter in one line what subjects you want to add to the student");
+
+
+    }
+
+    private static int chooseAction(int n){
+        Scanner sc = new Scanner(System.in);
         int c;
-        while ((c = sc.nextInt()) != 0){
-            System.out.print( student.getStudySubjects() + " ");
-            student.getStudySubjects();
-            sc.nextLine();
-            int i = 1;
-            System.out.println("0 - quit");
-            for (Person.Subjects sub : student.getStudySubjects()){
-                System.out.println(i + " - " + sub.name() + " " + student.getGrades().get(sub));
-                i++;
+        while (true) {
+            try {
+                c = sc.nextInt();
+                if ((c >= 0) && (c <= n)) { break; }
+                System.out.println("Incorrect number! Enter a number from 0 to " + n);
+            } catch (InputMismatchException ime) {
+                System.out.println("Incorrect format! Enter a number from 0 to " + n + " to choose action");
             }
         }
-
-
+        return c;
     }
 
 }
