@@ -1,0 +1,37 @@
+---
+CS - create student
+fullName
+yearOfBirth
+telephoneNumber
+grades
+---
+EN - end program
+---
+CT - create teacher
+fullName
+yearOfBirth
+telephoneNumber
+subject
+workingHours
+---
+MS - modify student
+ID number
+FN fullName
+YB yearOfBirth
+TN telephoneNumber
+RS remove subjects
+GS
+subject1 grade1
+subject2 grade2
+---
+MT - modify teacher
+ID number
+FN fullName
+YB yearOfBirth
+TN telephoneNumber
+ST subject
+WH workingHours
+---
+DP - delete person
+ID number
+---
