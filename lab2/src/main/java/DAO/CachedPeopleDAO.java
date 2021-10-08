@@ -14,34 +14,34 @@ import java.util.HashMap;
 
 public class CachedPeopleDAO implements Dao{
 
-    HashMap<Integer, Person> peopleById;
-    String pathToDirectory;
-    String pathToIdsfile;
+    private HashMap<Integer, Person> peopleById;
+    private String pathToDirectory;
+    private String pathToIdsfile;
 
     public CachedPeopleDAO(String pathToIdsfile, String pathToDirectory){
         this.pathToDirectory = pathToDirectory;
         this.pathToIdsfile = pathToIdsfile;
     }
 
-    public Person readPerson(int Id) throws Exception {
+    public Person readPerson(int id) throws Exception {
 
         RandomAccessFile rwID = new RandomAccessFile(pathToIdsfile + "IDs.txt", "rw");
-        if (rwID.length()<Id){ throw new Exception("Incorrect ID or IDs.txt!"); }
-        rwID.seek(Id);
-        int typeOfPerson = rwID.read(); // 1 - Student, 2 - Teacher
+        if (rwID.length()<id){ throw new Exception("Incorrect ID or IDs.txt!"); }
+        rwID.seek(id);
+        int typeOfPerson = rwID.read() - '0'; // 1 - Student, 2 - Teacher
         if (typeOfPerson == 0) {throw new Exception("Person doesn't exist in IDs.txt!"); }
-        File fPerson = new File(pathToDirectory + Id + ".json");
+        File fPerson = new File(pathToDirectory + id + ".json");
         if (!fPerson.exists()){ throw new Exception("File with this ID doesn't exists!"); }
 
         ObjectMapper objectMapper = new ObjectMapper();
         if (typeOfPerson == 1){
             Person person = objectMapper.readValue(fPerson, Student.class);
-            peopleById.put(Id, person);
+            peopleById.put(id, person);
             return person;
         }
         if (typeOfPerson == 2){
             Person person = objectMapper.readValue(fPerson, Teacher.class);
-            peopleById.put(Id, person);
+            peopleById.put(id, person);
             return person;
         }
 
@@ -55,16 +55,16 @@ public class CachedPeopleDAO implements Dao{
         peopleById.put(person.getID(), person);
     }
 
-    public void deletePerson(int Id) throws Exception{
+    public void deletePerson(int id) throws Exception{
         RandomAccessFile rwID = new RandomAccessFile(pathToIdsfile + "IDs.txt", "rw");
-        if (rwID.length()<Id){ throw new Exception("Incorrect ID or IDs.txt!"); }
-        rwID.seek(Id);
+        if (rwID.length()<id){ throw new Exception("Incorrect ID or IDs.txt!"); }
+        rwID.seek(id);
         rwID.write(0);
-        Files.delete(Paths.get(pathToDirectory + Id + ".json"));
-        peopleById.remove(Id);
+        Files.delete(Paths.get(pathToDirectory + id + ".json"));
+        peopleById.remove(id);
     }
 
-    public void setNewId(Person person) throws Exception {
+    private void setNewId(Person person) throws Exception {
         RandomAccessFile rwID = new RandomAccessFile(pathToIdsfile + "IDs.txt", "rw");
         if (rwID.length() == 0) {
             rwID.close();
@@ -81,27 +81,31 @@ public class CachedPeopleDAO implements Dao{
             return;
         }
 
-        int Id = -1;
+        int id = -1;
         for (int i = 0; i < rwID.length(); i++) {
             if (rwID.read() == '0') {
-                Id = i;
+                id = i;
                 break;
             }
         }
 
-        if (Id == -1) {
+        if (id == -1) {
             System.err.println("Ids overflow!");
             rwID.close();
             throw new Exception();
         }
 
-        rwID.seek(Id);
+        rwID.seek(id);
         if (person.getClass() == Student.class){ rwID.write('1'); }else{
             if (person.getClass() == Teacher.class){ rwID.write('2'); }
         }
         rwID.close();
 
-        person.setId(Id);
+        person.setId(id);
+    }
+
+    public HashMap<Integer, Person> getPeopleById() {
+        return peopleById;
     }
 
 }

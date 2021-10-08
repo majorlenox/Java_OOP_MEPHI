@@ -1,12 +1,5 @@
 package Persons;
 
-import DAO.Dao;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.*;
-import java.util.Formatter;
-import java.util.Scanner;
-
 public abstract class Person {
 
     public enum Subjects {
@@ -28,7 +21,7 @@ public abstract class Person {
     private String fullName;
     private int yearOfBirth;
     private String telephoneNumber;
-    private int Id = -1;                // gets the Id only after writing to the file (or if Person readed from file)
+    private int id = -1;                // gets the Id only after writing to the file (or if Person readed from file)
 
     public Person(String fullName, int yearOfBirth, String telephoneNumber) throws Exception {
         this.fullName = fullName;
@@ -49,11 +42,11 @@ public abstract class Person {
     }
 
     public int getID() {
-        return Id;
+        return id;
     }
 
-    public void setId(int Id){
-        this.Id = Id;
+    public void setId(int id){
+        this.id = id;
     }
 
     public void setFullName(String fullName) {

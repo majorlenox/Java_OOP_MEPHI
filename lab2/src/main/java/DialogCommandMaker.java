@@ -554,6 +554,7 @@ public class DialogCommandMaker {
                 System.out.println("Incorrect number! Enter a number from 0 to " + n);
             } catch (InputMismatchException ime) {
                 System.out.println("Incorrect format! Enter a number from 0 to " + n + " to choose action");
+                sc.nextLine();
             }
         }
         return c;
