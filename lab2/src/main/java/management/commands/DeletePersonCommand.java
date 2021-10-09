@@ -1,4 +1,4 @@
-package Management.Commands;
+package management.commands;
 
 import java.io.BufferedReader;
 import java.io.IOException;

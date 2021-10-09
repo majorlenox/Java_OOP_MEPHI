@@ -1,12 +1,12 @@
-package Management;
+package management;
 
-import DAO.CachedPeopleDAO;
-import DAO.Dao;
-import DAO.PeopleDAO;
-import Management.Commands.*;
-import Persons.Person;
-import Persons.Student;
-import Persons.Teacher;
+import dao.CachedPeopleDAO;
+import dao.Dao;
+import dao.PeopleDAO;
+import management.commands.*;
+import persons.Person;
+import persons.Student;
+import persons.Teacher;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +40,10 @@ public class PeopleService {
                 ModifyStudentCommand mSC = (ModifyStudentCommand) cmd;
                 Person tempPerson = psDao.readPerson(mSC.getId());
                 if (tempPerson.getClass() != Student.class){
-                    throw new Exception("Attempt to modify the student using the no-student modify command");
+                    throw new Exception("EM Attempt to modify the student using the no-student modify command\n"
+                            +  "MS\nID " + mSC.getId() + "\n" + "FN " + mSC.getFullName() + "\n" + "YB "
+                            + mSC.getYearOfBirth() + "\n" + "TN " + mSC.getTelephoneNumber() + "\n" + "RS"
+                            + mSC.getrSubjects().toArray().toString() + "\n" + "GS\n" + );
                 }
                 Student student1 = (Student) tempPerson;
                 if (mSC.getFullName()!=null) {

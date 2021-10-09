@@ -1,4 +1,4 @@
-package Management.Commands;
+package management.commands;
 
 public class EndCommand extends Command {
 

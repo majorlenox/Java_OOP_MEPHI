@@ -1,4 +1,4 @@
-package Management;
+package management;
 
 import java.util.AbstractQueue;
 import java.util.Iterator;

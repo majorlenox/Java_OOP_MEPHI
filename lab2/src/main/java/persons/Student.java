@@ -1,4 +1,4 @@
-package Persons;
+package persons;
 
 import java.util.HashMap;
 
@@ -9,7 +9,7 @@ public class Student extends Person {
     public Student(){
     }
 
-    public Student(String fullName, int yearOfBirth, String telephoneNumber, HashMap<Subjects, Double> grades) throws Exception {
+    public Student(String fullName, int yearOfBirth, String telephoneNumber, HashMap<Subjects, Double> grades){
         super(fullName, yearOfBirth, telephoneNumber);
         this.grades = grades;
     }

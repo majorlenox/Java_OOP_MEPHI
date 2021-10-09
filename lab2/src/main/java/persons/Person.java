@@ -1,4 +1,4 @@
-package Persons;
+package persons;
 
 public abstract class Person {
 
@@ -26,7 +26,7 @@ public abstract class Person {
     public Person(){
     }
 
-    public Person(String fullName, int yearOfBirth, String telephoneNumber) throws Exception {
+    public Person(String fullName, int yearOfBirth, String telephoneNumber){
         this.fullName = fullName;
         this.yearOfBirth = yearOfBirth;
         this.telephoneNumber = telephoneNumber;

@@ -1,4 +1,4 @@
-package Persons;
+package persons;
 
 public class Teacher extends Person {
 
@@ -8,7 +8,7 @@ public class Teacher extends Person {
     public Teacher(){
     }
 
-    public Teacher(String fullName, int yearOfBirth, String telephoneNumber, Subjects subject, String workingHours) throws Exception {
+    public Teacher(String fullName, int yearOfBirth, String telephoneNumber, Subjects subject, String workingHours){
         super(fullName, yearOfBirth, telephoneNumber);
         this.subject = subject;
         this.workingHours = workingHours;

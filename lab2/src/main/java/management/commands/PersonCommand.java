@@ -1,4 +1,4 @@
-package Management.Commands;
+package management.commands;
 
 public abstract class PersonCommand extends Command {
 

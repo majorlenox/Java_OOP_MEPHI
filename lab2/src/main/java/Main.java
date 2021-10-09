@@ -1,7 +1,7 @@
-import Management.CommandQueue;
-import Management.Commands.Command;
-import Management.Controller;
-import Management.Dispatcher;
+import management.CommandQueue;
+import management.commands.Command;
+import management.Controller;
+import management.Dispatcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +40,16 @@ public class Main {
         CommandQueue<Command> commandsForPeopleService = new CommandQueue<>();
 
         if (m >= 2) {
+            Path pathToFolder = Paths.get("./target/Errors");
+            if (!Files.exists(pathToFolder)) {
+                if (!(new File("./target/Errors").mkdirs())) {
+                    System.out.println("Can't create Error folder in ./target/Errors");
+                }else{
+                    System.out.println("Error folder in ./target/Errors");
+                }
+            }
             initControllerAndDispatcher(commandsForPeopleService);
+
             if (m == 2) {
                 try {
                     TimeUnit.SECONDS.sleep(1);
@@ -234,7 +243,7 @@ public class Main {
         if (mainController != null) {
             if (mainController.isAlive()) {
                 try {
-                    TimeUnit.SECONDS.sleep(2);
+                    TimeUnit.MILLISECONDS.sleep(1200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -244,7 +253,7 @@ public class Main {
         if (mainDispatcher != null) {
             if (mainDispatcher.isAlive()) {
                 try {
-                    TimeUnit.SECONDS.sleep(2);
+                    TimeUnit.MILLISECONDS.sleep(1200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

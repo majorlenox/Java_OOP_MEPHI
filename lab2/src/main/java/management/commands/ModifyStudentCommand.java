@@ -1,6 +1,6 @@
-package Management.Commands;
+package management.commands;
 
-import Persons.Person;
+import persons.Person;
 
 import java.io.BufferedReader;
 import java.util.HashMap;

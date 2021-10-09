@@ -1,4 +1,4 @@
-import Persons.Person;
+import persons.Person;
 
 import java.io.File;
 import java.io.FileWriter;

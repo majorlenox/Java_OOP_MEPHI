@@ -1,8 +1,8 @@
-package DAO;
+package dao;
 
-import Persons.Person;
-import Persons.Student;
-import Persons.Teacher;
+import persons.Person;
+import persons.Student;
+import persons.Teacher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -10,23 +10,20 @@ import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Formatter;
-import java.util.HashMap;
 
-public class CachedPeopleDAO implements Dao{
+public class PeopleDAO implements Dao {
 
-    private HashMap<Integer, Person> peopleById;
-    private String pathToDirectory;
-    private String pathToIdsfile;
+    String pathToDirectory;
+    String pathToIdsFile;
 
-    public CachedPeopleDAO(String pathToIdsfile, String pathToDirectory){
+    public PeopleDAO(String pathToIdsFile, String pathToDirectory){
         this.pathToDirectory = pathToDirectory;
-        this.pathToIdsfile = pathToIdsfile;
+        this.pathToIdsFile = pathToIdsFile;
     }
 
     public Person readPerson(int id) throws Exception {
-
-        RandomAccessFile rwID = new RandomAccessFile(pathToIdsfile + "IDs.txt", "rw");
-        if (rwID.length()<id){ throw new Exception("Incorrect ID or IDs.txt!"); }
+        RandomAccessFile rwID = new RandomAccessFile(pathToIdsFile + "IDs.txt", "rw");
+        if (rwID.length()< id){ throw new Exception("Incorrect ID or IDs.txt!"); }
         rwID.seek(id);
         int typeOfPerson = rwID.read() - '0'; // 1 - Student, 2 - Teacher
         if (typeOfPerson == 0) {throw new Exception("Person doesn't exist in IDs.txt!"); }
@@ -35,14 +32,10 @@ public class CachedPeopleDAO implements Dao{
 
         ObjectMapper objectMapper = new ObjectMapper();
         if (typeOfPerson == 1){
-            Person person = objectMapper.readValue(fPerson, Student.class);
-            peopleById.put(id, person);
-            return person;
+            return objectMapper.readValue(fPerson, Student.class);
         }
         if (typeOfPerson == 2){
-            Person person = objectMapper.readValue(fPerson, Teacher.class);
-            peopleById.put(id, person);
-            return person;
+            return objectMapper.readValue(fPerson, Teacher.class);
         }
 
         throw new Exception("Person type is unknown!");
@@ -52,23 +45,21 @@ public class CachedPeopleDAO implements Dao{
         ObjectMapper objectMapper = new ObjectMapper();
         if (person.getID() == -1) { setNewId(person); }
         objectMapper.writeValue(new File( pathToDirectory + person.getID() + ".json"), person);
-        peopleById.put(person.getID(), person);
     }
 
     public void deletePerson(int id) throws Exception{
-        RandomAccessFile rwID = new RandomAccessFile(pathToIdsfile + "IDs.txt", "rw");
-        if (rwID.length()<id){ throw new Exception("Incorrect ID or IDs.txt!"); }
+        RandomAccessFile rwID = new RandomAccessFile(pathToIdsFile + "IDs.txt", "rw");
+        if (rwID.length()< id){ throw new Exception("Incorrect ID or IDs.txt!"); }
         rwID.seek(id);
         rwID.write('0');
         Files.delete(Paths.get(pathToDirectory + id + ".json"));
-        peopleById.remove(id);
     }
 
     private void setNewId(Person person) throws Exception {
-        RandomAccessFile rwID = new RandomAccessFile(pathToIdsfile + "IDs.txt", "rw");
+        RandomAccessFile rwID = new RandomAccessFile(pathToIdsFile + "IDs.txt", "rw");
         if (rwID.length() == 0) {
             rwID.close();
-            Formatter fID = new Formatter(pathToIdsfile + "IDs.txt");
+            Formatter fID = new Formatter(pathToIdsFile + "IDs.txt");
             if (person.getClass() == Student.class){ fID.format("1"); }else{
                 if (person.getClass() == Teacher.class){ fID.format("2"); }
             }
@@ -102,10 +93,6 @@ public class CachedPeopleDAO implements Dao{
         rwID.close();
 
         person.setId(id);
-    }
-
-    public HashMap<Integer, Person> getPeopleById() {
-        return peopleById;
     }
 
 }

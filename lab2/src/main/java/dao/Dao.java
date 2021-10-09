@@ -1,6 +1,6 @@
-package DAO;
+package dao;
 
-import Persons.Person;
+import persons.Person;
 
 public interface Dao {
 
