@@ -59,7 +59,7 @@ public class CachedPeopleDAO implements Dao{
         RandomAccessFile rwID = new RandomAccessFile(pathToIdsfile + "IDs.txt", "rw");
         if (rwID.length()<id){ throw new Exception("Incorrect ID or IDs.txt!"); }
         rwID.seek(id);
-        rwID.write(0);
+        rwID.write('0');
         Files.delete(Paths.get(pathToDirectory + id + ".json"));
         peopleById.remove(id);
     }

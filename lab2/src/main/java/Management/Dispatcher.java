@@ -14,9 +14,13 @@ public class Dispatcher extends Thread {
             try {
                 updateAndPullOutCommands();
             } catch (Exception e) {
-               if (e.getMessage().equals("File with this ID doesn't exists!"))  {continue; }
-               System.out.println(e.getMessage() + " - Dispatcher was stopped");
-               System.out.println(commandsForPeopleService.size() + " commands lost");
+               if (e.getMessage().equals("File with this ID doesn't exists!") ||
+                       (e.getMessage().equals("Person doesn't exist in IDs.txt!"))||
+                       (e.getMessage().equals("Attempt to modify the teacher using the no-teacher modify command"))||
+                       (e.getMessage().equals("Attempt to modify the student using the no-student modify command"))
+               ) { System.err.println(e.getMessage() + " - Dispatcher still working"); continue; }
+               System.err.println(e.getMessage() + " - Dispatcher was stopped");
+               System.err.println(commandsForPeopleService.size() + " commands lost");
                return;
             }
             try {

@@ -218,13 +218,13 @@ public class Main {
                 mainController = new Controller(pathToManagementFolder, commandsForPeopleService);
                 mainController.start();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.err.println(e.getMessage());
             }
             try {
                 mainDispatcher = new Dispatcher(pathToPersonsFolder, commandsForPeopleService);
                 mainDispatcher.start();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.err.println(e.getMessage());
             }
         }
     }

@@ -23,6 +23,9 @@ public abstract class Person {
     private String telephoneNumber;
     private int id = -1;                // gets the Id only after writing to the file (or if Person readed from file)
 
+    public Person(){
+    }
+
     public Person(String fullName, int yearOfBirth, String telephoneNumber) throws Exception {
         this.fullName = fullName;
         this.yearOfBirth = yearOfBirth;

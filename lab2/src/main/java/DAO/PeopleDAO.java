@@ -51,7 +51,7 @@ public class PeopleDAO implements Dao {
         RandomAccessFile rwID = new RandomAccessFile(pathToIdsFile + "IDs.txt", "rw");
         if (rwID.length()< id){ throw new Exception("Incorrect ID or IDs.txt!"); }
         rwID.seek(id);
-        rwID.write(0);
+        rwID.write('0');
         Files.delete(Paths.get(pathToDirectory + id + ".json"));
     }
 

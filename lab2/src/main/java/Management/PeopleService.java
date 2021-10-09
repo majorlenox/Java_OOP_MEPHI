@@ -42,7 +42,11 @@ public class PeopleService {
                 break;
             case "MS":
                 ModifyStudentCommand mSC = (ModifyStudentCommand) cmd;
-                Student student1 = (Student) psDao.readPerson(mSC.getId());
+                Person tempPerson = psDao.readPerson(mSC.getId());
+                if (tempPerson.getClass() != Student.class){
+                    throw new Exception("Attempt to modify the student using the no-student modify command");
+                }
+                Student student1 = (Student) tempPerson;
                 if (mSC.getFullName()!=null) {
                     student1.setFullName(mSC.getFullName());
                 }
@@ -62,7 +66,11 @@ public class PeopleService {
                 break;
             case "MT":
                 ModifyTeacherCommand mTC = (ModifyTeacherCommand) cmd;
-                Teacher teacher1 = (Teacher) psDao.readPerson(mTC.getId());
+                Person tempPerson1 = psDao.readPerson(mTC.getId());
+                if (tempPerson1.getClass() != Teacher.class){
+                    throw new Exception("Attempt to modify the teacher using the no-teacher modify command");
+                }
+                Teacher teacher1 = (Teacher) tempPerson1;
                 if (mTC.getFullName()!=null) {
                     teacher1.setFullName(mTC.getFullName());
                 }

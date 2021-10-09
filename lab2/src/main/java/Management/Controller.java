@@ -20,10 +20,10 @@ public class Controller extends Thread {
                 try {
                     updateAndAddCommands();
                 } catch (FileNotFoundException fNFE) {
-                    System.out.println(fNFE.getMessage() + " - alien file. Controller was stopped");
+                    System.err.println(fNFE.getMessage() + " - alien file. Controller was stopped");
                     return;
                 } catch (Exception e) {
-                    System.out.println(e.getMessage() + " - Controller was stopped");
+                    System.err.println(e.getMessage() + " - Controller was stopped");
                     return;
                 }
                 Thread.sleep(1000);

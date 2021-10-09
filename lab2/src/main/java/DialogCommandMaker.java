@@ -446,10 +446,11 @@ public class DialogCommandMaker {
         while (true){
             try{
                 id = sc.nextInt();
+                if (id < 0){throw new InputMismatchException("The ID can only be a not-negative integer");}
                 sc.nextLine();
                 break;
             }catch(InputMismatchException ime){
-                System.out.println();
+                System.out.println(ime.getMessage());
                 sc.nextLine();
             }
         }
