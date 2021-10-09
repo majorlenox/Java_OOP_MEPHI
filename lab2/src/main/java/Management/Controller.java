@@ -9,8 +9,8 @@ import java.nio.file.Paths;
 
 public class Controller extends Thread {
 
-    private String pathToManagementFolder;
-    private CommandQueue<Command> commandsForPeopleService;
+    private final String pathToManagementFolder;
+    private final CommandQueue<Command> commandsForPeopleService;
 
     @Override
     public void run() {
@@ -34,7 +34,7 @@ public class Controller extends Thread {
     }
 
 
-    public Controller(String pathToManagementFolder, CommandQueue<Command> commandsForPeopleService) throws Exception {
+    public Controller(String pathToManagementFolder, CommandQueue<Command> commandsForPeopleService) {
         this.pathToManagementFolder = pathToManagementFolder;
         this.commandsForPeopleService = commandsForPeopleService;
     }
@@ -45,13 +45,13 @@ public class Controller extends Thread {
         if (files == null) {
             return;
         }
-        for (int i = 0; i < files.length; i++) {
-            FileReader fr = new FileReader(pathToManagementFolder + files[i]);
+        for (String file : files) {
+            FileReader fr = new FileReader(pathToManagementFolder + file);
             BufferedReader reader = new BufferedReader(fr);
             String commandSpecifier;
             commandSpecifier = reader.readLine();
             if (commandSpecifier == null) {
-                throw new Exception("Unexpected end of file " + pathToManagementFolder + files[i]);
+                throw new Exception("Unexpected end of file " + pathToManagementFolder + file);
             }
 
             switch (commandSpecifier) {
@@ -63,7 +63,7 @@ public class Controller extends Thread {
                     break;
                 case "EN":
                     commandsForPeopleService.offer(new EndCommand());
-                    Files.delete(Paths.get(pathToManagementFolder + files[i]));
+                    Files.delete(Paths.get(pathToManagementFolder + file));
                     throw new Exception("end command");
                 case "MS":
                     commandsForPeopleService.offer(new ModifyStudentCommand(reader));
@@ -75,17 +75,13 @@ public class Controller extends Thread {
                     commandsForPeopleService.offer(new DeletePersonCommand(reader));
                     break;
                 default:
-                    throw new Exception("Unknown command " + commandSpecifier + "in file:" + pathToManagementFolder + files[i]);
+                    throw new Exception("Unknown command " + commandSpecifier + "in file:" + pathToManagementFolder + file);
             }
 
-            Files.delete(Paths.get(pathToManagementFolder + files[i]));
+            Files.delete(Paths.get(pathToManagementFolder + file));
         }
 
 
-    }
-
-    public String getPathToManagementFolder() {
-        return pathToManagementFolder;
     }
 
 }

@@ -7,8 +7,8 @@ import java.io.IOException;
 
 public class CreateTeacherCommand extends PersonCommand{
 
-    private Person.Subjects subject;
-    private String workingHours;
+    private final Person.Subjects subject;
+    private final String workingHours;
 
     public CreateTeacherCommand(BufferedReader reader) throws IOException {
         commandSpecifier = "CT";

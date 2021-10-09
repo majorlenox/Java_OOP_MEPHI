@@ -13,14 +13,10 @@ import java.util.HashSet;
 
 public class PeopleService {
 
-    private String pathToDirectory;
-    private String pathToIdsFile;
-    private Dao psDao;
+    private final Dao psDao;
 
     public PeopleService(String pathToDirectory, String pathToIdsFile){
         psDao = new PeopleDAO(pathToIdsFile, pathToDirectory);  // optional, use PeopleDAO or CachedPeopleDAO
-        this.pathToDirectory = pathToDirectory;
-        this.pathToIdsFile = pathToIdsFile;
     }
 
     public void processTheCommand(Command cmd) throws Exception {
@@ -119,9 +115,7 @@ public class PeopleService {
 
     private void addStudentsGrades(Student student1, HashMap<Person.Subjects, Double> grades){
         for (Person.Subjects sub : grades.keySet()) {
-            if (student1.getGrades().containsKey(sub)) {
-                student1.getGrades().remove(sub);
-            }
+            student1.getGrades().remove(sub);
             student1.getGrades().put(sub, grades.get(sub));
         }
 

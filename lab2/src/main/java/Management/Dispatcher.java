@@ -4,8 +4,8 @@ import Management.Commands.*;
 
 public class Dispatcher extends Thread {
 
-    private String pathToPersonsFolder;
-    private CommandQueue<Command> commandsForPeopleService;
+    private final String pathToPersonsFolder;
+    private final CommandQueue<Command> commandsForPeopleService;
 
     @Override
     public void run() {

@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 
 public class ModifyTeacherCommand extends PersonCommand {
 
-    private int id;
+    private final int id;
     private Person.Subjects subject;
     private String workingHours;
 

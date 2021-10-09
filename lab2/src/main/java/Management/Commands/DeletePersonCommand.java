@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class DeletePersonCommand extends Command {
 
-    private int id;
+    private final int id;
 
     public DeletePersonCommand(BufferedReader reader) throws IOException {
         commandSpecifier = "DP";
@@ -14,10 +14,6 @@ public class DeletePersonCommand extends Command {
 
     public int getId() {
         return id;
-    }
-
-    public void doCommand(){
-
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 public class ModifyStudentCommand extends PersonCommand {
 
-    private int id;
+    private final int id;
     private HashSet<Person.Subjects> rSubjects;
     private HashMap<Person.Subjects, Double> grades;
 

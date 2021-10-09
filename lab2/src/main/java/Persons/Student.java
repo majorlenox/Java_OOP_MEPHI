@@ -18,8 +18,4 @@ public class Student extends Person {
         return grades;
     }
 
-    public void setGrades(HashMap<Subjects, Double> grades) {
-        this.grades = grades;
-    }
-
 }

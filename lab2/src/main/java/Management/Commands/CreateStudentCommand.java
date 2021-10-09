@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class CreateStudentCommand extends PersonCommand {
 
-    private HashMap<Person.Subjects, Double> grades;
+    private final HashMap<Person.Subjects, Double> grades;
 
     public CreateStudentCommand(BufferedReader reader) throws IOException {
         commandSpecifier = "CS";

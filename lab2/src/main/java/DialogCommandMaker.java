@@ -61,7 +61,7 @@ public class DialogCommandMaker {
         System.out.println("Enter the student's full name");
         String fullName = sc.nextLine();
         System.out.println("Enter the student's year of birth");
-        int yearOfBirth = 0;
+        int yearOfBirth;
         while (true) {
             try {
                 yearOfBirth = sc.nextInt();
@@ -139,7 +139,7 @@ public class DialogCommandMaker {
         System.out.println("Enter the teacher's full name");
         String fullName = sc.nextLine();
         System.out.println("Enter the teacher's year of birth");
-        int yearOfBirth = 0;
+        int yearOfBirth;
         while (true) {
             try {
                 yearOfBirth = sc.nextInt();
@@ -442,7 +442,7 @@ public class DialogCommandMaker {
     public int inputId(){
         System.out.println("Input person ID");
         Scanner sc = new Scanner(System.in);
-        int id = -1;
+        int id;
         while (true){
             try{
                 id = sc.nextInt();

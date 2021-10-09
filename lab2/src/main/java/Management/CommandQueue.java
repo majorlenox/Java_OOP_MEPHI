@@ -6,10 +6,10 @@ import java.util.LinkedList;
 
 public class CommandQueue<T> extends AbstractQueue<T> {
 
-    private LinkedList<T> elements;
+    private final LinkedList<T> elements;
 
     public CommandQueue() {
-        this.elements = new LinkedList<T>();
+        this.elements = new LinkedList<>();
     }
 
     @Override
