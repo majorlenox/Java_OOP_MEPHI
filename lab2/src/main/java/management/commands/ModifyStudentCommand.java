@@ -3,6 +3,7 @@ package management.commands;
 import persons.Person;
 
 import java.io.BufferedReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -21,19 +22,22 @@ public class ModifyStudentCommand extends PersonCommand {
             String[] inputLineWords = inputLine.split(" ");
             switch (inputLineWords[0]) {
                 case "FN":
-                    fullName = inputLineWords[1];
+                    fullName = inputLine.substring(inputLine.indexOf(inputLineWords[1]));
                     break;
                 case "YB":
                     yearOfBirth = Integer.parseInt(inputLineWords[1]);
                     break;
                 case "TN":
-                    telephoneNumber = inputLineWords[1];
+                    telephoneNumber = inputLine.substring(inputLine.indexOf(inputLineWords[1]));
                     break;
                 case "RS":
                     rSubjects = new HashSet<>();
                     for (int i = 1; i < inputLineWords.length; i++) {
-                        rSubjects.add(Person.Subjects.valueOf(inputLineWords[i].toUpperCase()));
+                        if (!inputLineWords[i].equals("")) {
+                            rSubjects.add(Person.Subjects.valueOf(inputLineWords[i].toUpperCase()));
+                        }
                     }
+                    if (rSubjects.isEmpty()) {throw new Exception("No remove Subjects after RS");}
                     break;
                 case "GS":
                     grades = new HashMap<>();
@@ -41,8 +45,12 @@ public class ModifyStudentCommand extends PersonCommand {
                         inputLineWords = inputLine.split(" ");
                         try {
                             grades.put(Person.Subjects.valueOf(inputLineWords[0].toUpperCase()), Double.parseDouble(inputLineWords[1]));
-                        } catch (IllegalArgumentException nfe) { // grade not a double or wrong subject
+                        } catch (IllegalArgumentException nfe) {// grade not a double or wrong subject
+                            throw new Exception("Incorrect format of grades");
                         }
+                    }
+                    if (grades.isEmpty()){
+                    throw new Exception("No grades after GS");
                     }
                     break;
                 default:
@@ -61,6 +69,17 @@ public class ModifyStudentCommand extends PersonCommand {
 
     public HashMap<Person.Subjects, Double> getGrades() {
         return grades;
+    }
+
+    private String deleteSpaces(String iStr){
+        StringBuffer oStr = new StringBuffer();
+        char[] iStrChars = iStr.toCharArray();
+        for (int i = 0; i < iStr.length(); i++){
+            if (iStrChars[i]!=' '){
+                oStr.append(iStrChars[i]);
+            }
+        }
+        return oStr.toString();
     }
 
 }

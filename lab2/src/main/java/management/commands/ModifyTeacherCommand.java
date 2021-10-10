@@ -19,19 +19,25 @@ public class ModifyTeacherCommand extends PersonCommand {
             String[] inputLineWords = inputLine.split(" ");
             switch (inputLineWords[0]) {
                 case "FN":
-                    fullName = inputLineWords[1];
+                    fullName = inputLine.substring(inputLine.indexOf(inputLineWords[1]));
                     break;
                 case "YB":
                     yearOfBirth = Integer.parseInt(inputLineWords[1]);
                     break;
                 case "TN":
-                    telephoneNumber = inputLineWords[1];
+                    telephoneNumber = inputLine.substring(inputLine.indexOf(inputLineWords[1]));
                     break;
                 case "ST":
-                    subject = Person.Subjects.valueOf(inputLineWords[1].toUpperCase());
+                    int i = 1;
+                    while (i <= inputLineWords.length){
+                        if (!inputLineWords[i].equals("")){break;}
+                        i++;    // skip spaces
+                    }
+                    if (inputLineWords.length < i ){throw new Exception("No subject after ST");}
+                    subject = Person.Subjects.valueOf(inputLineWords[i].toUpperCase());
                     break;
                 case "WH":
-                    workingHours = inputLineWords[1];
+                    workingHours = inputLine.substring(inputLine.indexOf(inputLineWords[1]));
                     break;
                 default:
                     throw new Exception("Untracked Specifier: " + inputLineWords[0]);

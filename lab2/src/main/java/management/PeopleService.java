@@ -10,6 +10,7 @@ import persons.Teacher;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class PeopleService {
 
@@ -97,7 +98,7 @@ public class PeopleService {
                 if (mTC.getSubject()!=null) {
                     teacher1.setSubject(mTC.getSubject());
                 }
-                if (mTC.getSubject()!=null) {
+                if (mTC.getWorkingHours()!=null) {
                     teacher1.setWorkingHours(mTC.getWorkingHours());
                 }
                 psDao.writePerson(teacher1);
@@ -129,10 +130,8 @@ public class PeopleService {
     }
 
     private void removeStudentsSubjects(Student student1, HashSet<Person.Subjects> rSubjects){
-        for (Person.Subjects sub : student1.getGrades().keySet()){
-            if (rSubjects.contains(sub)){
+        for (Person.Subjects sub : rSubjects){
                 student1.getGrades().remove(sub);
-            }
         }
     }
 

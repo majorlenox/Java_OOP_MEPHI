@@ -26,6 +26,10 @@ public class Controller extends Thread {
             return;
             }
             try {
+              if (!Files.exists(Paths.get("./target/Errors/OriginalFiles/"))) {
+                if (!(new File("./target/Errors/OriginalFiles/").mkdirs())) {
+                  System.out.println("Can't create Error folder in ./target/Errors/OriginalFiles/");
+                } }
               String pathToFile = e.getMessage().split("\n")[0];
               Path source = Paths.get(pathToFile);
               String fileName = pathToFile.split("/")[pathToFile.split("/").length - 1];
