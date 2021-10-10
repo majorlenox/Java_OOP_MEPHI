@@ -6,13 +6,14 @@ import java.io.BufferedReader;
 
 public class ModifyTeacherCommand extends PersonCommand {
 
-    private final int id;
+    private final long id;
     private Person.Subjects subject;
     private String workingHours;
 
     public ModifyTeacherCommand(BufferedReader reader) throws Exception {
         commandSpecifier = "MT";
         id = Integer.parseInt(reader.readLine().split(" ")[1]);
+        if (id <= 0){throw new Exception("Incorrect id");}
         String inputLine;
         while ((inputLine = reader.readLine()) != null) {
             String[] inputLineWords = inputLine.split(" ");
@@ -38,7 +39,7 @@ public class ModifyTeacherCommand extends PersonCommand {
         }
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

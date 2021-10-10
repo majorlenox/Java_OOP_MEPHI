@@ -6,8 +6,8 @@ public interface Dao {
 
     void writePerson(Person person) throws Exception;
 
-    Person readPerson(int id) throws Exception;
+    Person readPerson(long id) throws Exception;
 
-    void deletePerson(int id) throws Exception;
+    void deletePerson(long id) throws Exception;
 
 }

@@ -5,8 +5,7 @@ import persons.Student;
 import persons.Teacher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Formatter;
@@ -21,78 +20,56 @@ public class PeopleDAO implements Dao {
         this.pathToIdsFile = pathToIdsFile;
     }
 
-    public Person readPerson(int id) throws Exception {
-        RandomAccessFile rwID = new RandomAccessFile(pathToIdsFile + "IDs.txt", "rw");
-        if (rwID.length()< id){ throw new Exception("Incorrect ID or IDs.txt!"); }
-        rwID.seek(id);
-        int typeOfPerson = rwID.read() - '0'; // 1 - Student, 2 - Teacher
-        if (typeOfPerson == 0) {throw new Exception("Person doesn't exist in IDs.txt!"); }
-        File fPerson = new File(pathToDirectory + id + ".json");
-        if (!fPerson.exists()){ throw new Exception("File with this ID doesn't exists!"); }
-
+    public Person readPerson(long id) throws Exception {
+        String[] files = new File(pathToDirectory).list();
         ObjectMapper objectMapper = new ObjectMapper();
-        if (typeOfPerson == 1){
-            return objectMapper.readValue(fPerson, Student.class);
+        if (files != null) {
+            for (String file : files) {
+                if (file.equals(id + ".json")){
+                    File fPerson = new File(pathToDirectory + id + ".json");
+                    try{
+                        return objectMapper.readValue(fPerson, Student.class);
+                    }catch(Exception e){
+                        try{
+                        return objectMapper.readValue(fPerson, Teacher.class);
+                        }catch (Exception e1){
+                            throw new Exception("Unknown type of Person in file \n" + pathToDirectory + file);
+                        }
+                    }
+                }
+            }
         }
-        if (typeOfPerson == 2){
-            return objectMapper.readValue(fPerson, Teacher.class);
-        }
-
-        throw new Exception("Person type is unknown!");
+        throw new Exception("File with ID = " + id + " doesn't exist in " + pathToDirectory);
     }
 
     public void writePerson(Person person) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        if (person.getID() == -1) { setNewId(person); }
+        if (person.getID() == 0) { setNewId(person); }
         objectMapper.writeValue(new File( pathToDirectory + person.getID() + ".json"), person);
     }
 
-    public void deletePerson(int id) throws Exception{
-        RandomAccessFile rwID = new RandomAccessFile(pathToIdsFile + "IDs.txt", "rw");
-        if (rwID.length()< id){ throw new Exception("Incorrect ID or IDs.txt!"); }
-        rwID.seek(id);
-        rwID.write('0');
+    public void deletePerson(long id) throws Exception{
+        if (!Files.exists(Paths.get(pathToDirectory + id + ".json"))){
+            throw new Exception("Person with id = " + id + " doesn't exist in directory: " + pathToIdsFile);
+        }
         Files.delete(Paths.get(pathToDirectory + id + ".json"));
     }
 
     private void setNewId(Person person) throws Exception {
-        RandomAccessFile rwID = new RandomAccessFile(pathToIdsFile + "IDs.txt", "rw");
-        if (rwID.length() == 0) {
-            rwID.close();
-            Formatter fID = new Formatter(pathToIdsFile + "IDs.txt");
-            if (person.getClass() == Student.class){ fID.format("1"); }else{
-                if (person.getClass() == Teacher.class){ fID.format("2"); }
-            }
-            for (int i = 0; i < 10; i++) {
-                fID.format("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-            }
+        if (!Files.exists(Paths.get(pathToIdsFile + "ID.txt"))) {
+            Formatter fID = new Formatter(pathToIdsFile + "ID.txt");
+            fID.format("1");
             fID.close();
-
-            person.setId(0);
+            person.setId(1);
             return;
         }
-
-        int id = -1;
-        for (int i = 0; i < rwID.length(); i++) {
-            if (rwID.read() == '0') {
-                id = i;
-                break;
-            }
-        }
-
-        if (id == -1) {
-            System.err.println("Ids overflow!");
-            rwID.close();
-            throw new Exception();
-        }
-
-        rwID.seek(id);
-        if (person.getClass() == Student.class){ rwID.write('1'); }else{
-            if (person.getClass() == Teacher.class){ rwID.write('2'); }
-        }
-        rwID.close();
-
+        BufferedReader reader = new BufferedReader(new FileReader(pathToIdsFile + "ID.txt"));
+        long id = Long.parseLong(reader.readLine()) + 1;
         person.setId(id);
+        reader.close();
+        FileWriter writer = new FileWriter(pathToIdsFile + "ID.txt");
+        writer.write(String.valueOf(id));
+        writer.close();
     }
 
 }

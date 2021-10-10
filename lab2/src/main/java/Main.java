@@ -40,14 +40,14 @@ public class Main {
         CommandQueue<Command> commandsForPeopleService = new CommandQueue<>();
 
         if (m >= 2) {
-            Path pathToFolder = Paths.get("./target/Errors");
+            Path pathToFolder = Paths.get("./target/Errors/OriginalFiles/");
             if (!Files.exists(pathToFolder)) {
-                if (!(new File("./target/Errors").mkdirs())) {
-                    System.out.println("Can't create Error folder in ./target/Errors");
+                if (!(new File("./target/Errors/OriginalFiles/").mkdirs())) {
+                    System.out.println("Can't create Error folder in ./target/Errors/OriginalFiles/");
                 }else{
                     System.out.println("Error folder in ./target/Errors");
                 }
-            }
+            }else{ System.out.println("Error folder in ./target/Errors");}
             initControllerAndDispatcher(commandsForPeopleService);
 
             if (m == 2) {
@@ -57,7 +57,7 @@ public class Main {
                     e.printStackTrace();
                 }
                 System.out.println("Enter something - to quit");
-                while (sc.next() == null) {
+                while ((sc.next() == null)&&((mainDispatcher.isAlive()||(mainController.isAlive())))){
                 }
                 quitFromControllerAndDispatcher();
                 return;

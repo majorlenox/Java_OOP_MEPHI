@@ -1,0 +1,13 @@
+Controller.java:
+1. Unexpected end of file
+2. Unknown command
+Dispatcher.java:
+1.
+PeopleService.java:
+1. Attempt to modify the student using the no-student modify command 
+2. Attempt to modify the teacher using the no-teacher modify command 
+3. Unknown type of Person in file
+4. deletePerson: Person with id doesn't exist in directory
+
+
+

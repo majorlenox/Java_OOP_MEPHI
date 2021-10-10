@@ -8,13 +8,14 @@ import java.util.HashSet;
 
 public class ModifyStudentCommand extends PersonCommand {
 
-    private final int id;
+    private final long id;
     private HashSet<Person.Subjects> rSubjects;
     private HashMap<Person.Subjects, Double> grades;
 
     public ModifyStudentCommand(BufferedReader reader) throws Exception {
         commandSpecifier = "MS";
         id = Integer.parseInt(reader.readLine().split(" ")[1]);
+        if (id <= 0) {throw new Exception("Incorrect id");}
         String inputLine;
         while ((inputLine = reader.readLine()) != null) {
             String[] inputLineWords = inputLine.split(" ");
@@ -50,7 +51,7 @@ public class ModifyStudentCommand extends PersonCommand {
         }
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

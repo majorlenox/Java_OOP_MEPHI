@@ -3,14 +3,13 @@ package management.commands;
 import persons.Person;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.HashMap;
 
 public class CreateStudentCommand extends PersonCommand {
 
     private final HashMap<Person.Subjects, Double> grades;
 
-    public CreateStudentCommand(BufferedReader reader) throws IOException {
+    public CreateStudentCommand(BufferedReader reader) throws Exception {
         commandSpecifier = "CS";
         fullName = reader.readLine();
         yearOfBirth = Integer.parseInt(reader.readLine());
@@ -20,10 +19,7 @@ public class CreateStudentCommand extends PersonCommand {
         grades = new HashMap<>();
         while ((inputLine = reader.readLine()) != null) {
             subjectAndGrade = inputLine.split(" ");
-            try {
-                grades.put(Person.Subjects.valueOf(subjectAndGrade[0].toUpperCase()), Double.parseDouble(subjectAndGrade[1]));
-            } catch (IllegalArgumentException nfe) { // grade not a double or wrong subject
-            }
+            grades.put(Person.Subjects.valueOf(subjectAndGrade[0].toUpperCase()), Double.parseDouble(subjectAndGrade[1]));
         }
     }
 

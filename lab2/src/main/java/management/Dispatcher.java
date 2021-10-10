@@ -4,9 +4,11 @@ import management.commands.*;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
 
 public class Dispatcher extends Thread {
 
@@ -22,38 +24,71 @@ public class Dispatcher extends Thread {
             } catch (Exception e) {
 
                 if (e.getMessage().equals("end command")) {
-                    System.out.println("end command - Controller stopped");
+                    System.out.println("end command - Dispatcher stopped");
                     return;
                 }
-                int i = 1;
-                while (true) {
-                    try {
-                        if (i == 100) {
+
+                if (e.getMessage().split("\n")[0].equals("Unknown type of Person in file ")){
+                    try{
+                    String pathToFile = e.getMessage().split("\n")[1];
+                    Path source = Paths.get(pathToFile);
+                    String fileName = pathToFile.split("/")[pathToFile.split("/").length - 1];
+                    int i = 0;
+                    while (true) {
+                        Path dist;
+                        try {
+                            if (i == 0){
+                                dist = Paths.get("./target/Errors/OriginalFiles/" + fileName);
+                            }else{
+                                dist = Paths.get("./target/Errors/OriginalFiles/" + fileName.split("\\.")[0]
+                                        + "(" + i + ")" + "." + fileName.split("\\.")[1]);
+                            }
+                            Files.copy(source, dist);
                             break;
+                        } catch (Exception e1) {
+                            i++;
                         }
-                        File errFile = new File("./target/Errors/" + e.getMessage().charAt(0) +
-                                e.getMessage().charAt(1) + "_" + i + ".txt");
-                        FileWriter fw = new FileWriter(errFile);
-                        fw.write(e.getMessage());
-                        fw.close();
-                        break;
-                    } catch (Exception ex) {
-                        i++;
                     }
+                    Files.delete(source);
+                    File errFile;
+                    Calendar cl = Calendar.getInstance();
+                    if (i == 0){
+                        errFile = new File("./target/Errors/" + fileName.split("\\.")[0] + "_Err.txt");
+                        FileWriter fw = new FileWriter(errFile);
+                        fw.write(e.getMessage().split("\n")[0] + fileName + "\nTime: " + cl.getTime());
+                        fw.close();
+                    }else{
+                        errFile = new File("./target/Errors/" + fileName.split("\\.")[0] + "(" + i + ")"
+                                + "_Err.txt");
+                        FileWriter fw = new FileWriter(errFile);
+                        fw.write(e.getMessage().split("\n")[0] + fileName.split("\\.")[0]
+                                + "(" + i + ")" + "." + fileName.split("\\.")[1] + "\nTime: " + cl.getTime());
+                        fw.close();
+                    }
+                    }catch(IOException ioe){
+                        ioe.printStackTrace();
+                    }
+                    System.err.println("Dispatcher: New error in ./target/Errors");
+                    continue;
                 }
-                System.err.println(e.getMessage());
 
-
-
-
-               if (e.getMessage().equals("File with this ID doesn't exists!") ||
-                       (e.getMessage().equals("Person doesn't exist in IDs.txt!"))||
-                       (e.getMessage().equals("Attempt to modify the teacher using the no-teacher modify command"))||
-                       (e.getMessage().equals("Attempt to modify the student using the no-student modify command"))
-               ) { System.err.println(e.getMessage() + " - Dispatcher still working"); continue; }
-               System.err.println(e.getMessage() + " - Dispatcher was stopped");
-               System.err.println(commandsForPeopleService.size() + " commands lost");
-               return;
+                int i = 1;
+                while (Files.exists(Paths.get("./target/Errors/" + e.getMessage().charAt(0) +
+                        e.getMessage().charAt(1) + "_" + i + ".txt"))) {
+                    i++;
+                }
+                File errFile = new File("./target/Errors/" + e.getMessage().charAt(0) +
+                        e.getMessage().charAt(1) + "_" + i + ".txt");
+                try{
+                FileWriter fw = new FileWriter(errFile);
+                Calendar cl = Calendar.getInstance();
+                fw.write(e.getMessage()+ "\nTime: " + cl.getTime());
+                fw.close();
+                }catch (Exception efw){
+                    efw.printStackTrace();
+                }
+                System.err.println("Dispatcher: New error in ./target/Errors");
+                continue;
             }
             try {
                 Thread.sleep(1000);

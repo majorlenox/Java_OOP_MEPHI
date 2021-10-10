@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
 
 public class Controller extends Thread {
 
@@ -23,30 +24,44 @@ public class Controller extends Thread {
           if (e.getMessage().equals("end command")) {
             System.out.println("end command - Controller stopped");
             return;
-          }
-          int i = 1;
-          while (true) {
-            try {
-              if (i == 100) {
-                break;
-              }
-              Path source = Paths.get(e.getMessage().split("\n")[0]);
-              Path dist = Paths.get("./target/Errors/" +
-                      e.getMessage().charAt(0) + e.getMessage().charAt(1) + "_" + i + ".txt");
-              Files.copy(source, dist);
-              Files.delete(source);
-              File errFile = new File("./target/Errors/" + e.getMessage().charAt(0) +
-                      e.getMessage().charAt(1) + "_" + i + ".txt");
-              FileWriter fw = new FileWriter(errFile);
-              fw.write(e.getMessage());
-              fw.close();
-              break;
-            } catch (Exception ex) {
-              i++;
             }
-          }
-          System.err.println(e.getMessage());
-          return;
+            try {
+              String pathToFile = e.getMessage().split("\n")[0];
+              Path source = Paths.get(pathToFile);
+              String fileName = pathToFile.split("/")[pathToFile.split("/").length - 1];
+              int i = 0;
+              while (true) {
+                Path dist;
+                try {
+                  if (i == 0){
+                    dist = Paths.get("./target/Errors/OriginalFiles/" + fileName);
+                  }else{
+                    dist = Paths.get("./target/Errors/OriginalFiles/" + fileName.split("\\.")[0] +
+                            "(" + i + ")" + "." + fileName.split("\\.")[1]);
+                  }
+                  Files.copy(source, dist);
+                  break;
+                } catch (Exception e1) {
+                  i++;
+                }
+              }
+              Files.delete(source);
+              File errFile;
+              if (i == 0){
+                errFile = new File("./target/Errors/" + fileName.split("\\.")[0] + "_Err.txt");
+              }else{
+                errFile = new File("./target/Errors/" + fileName.split("\\.")[0] + "(" + i + ")"
+                        + "_Err.txt");
+              }
+              FileWriter fw = new FileWriter(errFile);
+              Calendar cl = Calendar.getInstance();
+              fw.write(e.getMessage().substring(pathToFile.length() + 1) + "\nTime: " + cl.getTime());
+              fw.close();
+            } catch (IOException ioe) {
+              ioe.printStackTrace();
+            }
+            System.err.println("Controller: New error in ./target/Errors");
+            continue;
         }
         Thread.sleep(1000);
       } catch (InterruptedException e) {
@@ -77,37 +92,51 @@ public class Controller extends Thread {
       String commandSpecifier;
       commandSpecifier = reader.readLine();
       if (commandSpecifier == null) {
-        throw new Exception(pathToManagementFolder + file + "\n" + "Unexpected end of file");
+        throw new Exception(pathToManagementFolder + file + "\nUnexpected end of file: " + file);
       }
 
       switch (commandSpecifier) {
         case "CS":
-          commandsForPeopleService.offer(new CreateStudentCommand(reader));
+          try{
+            commandsForPeopleService.offer(new CreateStudentCommand(reader));
+          }catch (Exception e){
+            throw new Exception(pathToManagementFolder + file + "\n" + e.getMessage());
+          }
           break;
         case "CT":
+          try {
           commandsForPeopleService.offer(new CreateTeacherCommand(reader));
+          }catch (Exception e){
+            throw new Exception(pathToManagementFolder + file + "\n" + e.getMessage());
+          }
           break;
         case "EN":
           commandsForPeopleService.offer(new EndCommand());
           Files.delete(Paths.get(pathToManagementFolder + file));
           throw new Exception("end command");
         case "MS":
+          try{
           commandsForPeopleService.offer(new ModifyStudentCommand(reader));
+          }catch (Exception e){
+            throw new Exception(pathToManagementFolder + file + "\n" + e.getMessage());
+          }
           break;
         case "MT":
+          try {
           commandsForPeopleService.offer(new ModifyTeacherCommand(reader));
+          }catch (Exception e){
+            throw new Exception(pathToManagementFolder + file + "\n" + e.getMessage());
+          }
           break;
         case "DP":
+          try {
           commandsForPeopleService.offer(new DeletePersonCommand(reader));
+          }catch (Exception e){
+            throw new Exception(pathToManagementFolder + file + "\n" + e.getMessage());
+          }
           break;
         default:
-          throw new Exception(
-              pathToManagementFolder
-                  + file
-                  + "\n"
-                  + "Unknown command "
-                  + commandSpecifier
-                  + "in file");
+          throw new Exception(pathToManagementFolder + file + "\n" + "Unknown command " + commandSpecifier);
       }
 
       Files.delete(Paths.get(pathToManagementFolder + file));

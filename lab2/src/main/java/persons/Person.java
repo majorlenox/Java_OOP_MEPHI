@@ -21,7 +21,7 @@ public abstract class Person {
     private String fullName;
     private int yearOfBirth;
     private String telephoneNumber;
-    private int id = -1;                // gets the Id only after writing to the file (or if Person readed from file)
+    private long id = 0;                // gets the Id only after writing to the file (or if Person readed from file)
 
     public Person(){
     }
@@ -44,11 +44,11 @@ public abstract class Person {
         return yearOfBirth;
     }
 
-    public int getID() {
+    public long getID() {
         return id;
     }
 
-    public void setId(int id){
+    public void setId(long id){
         this.id = id;
     }
 
