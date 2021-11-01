@@ -2,10 +2,9 @@ package management.commands;
 
 public abstract class Command {
 
-    protected String commandSpecifier;
+  protected String commandSpecifier;
 
-    public String getCommandSpecifier() {
-        return commandSpecifier;
-    }
-
+  public String getCommandSpecifier() {
+    return commandSpecifier;
+  }
 }

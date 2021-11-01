@@ -27,14 +27,19 @@ public class Dispatcher extends Thread {
       try {
         updateAndPullOutCommands();
       } catch (Exception e) {
-          if (e.getMessage().equals("end command")) {
-            System.out.println("end command - Dispatcher stopped");
+        if ("end command".equals(e.getMessage())) {
+          System.out.println("end command - Dispatcher stopped");
           return;
-          }
+        }
         if (!Files.exists(Paths.get("./target/Errors/OriginalFiles/"))) {
           if (!(new File("./target/Errors/OriginalFiles/").mkdirs())) {
             System.out.println("Can't create Error folder in ./target/Errors/OriginalFiles/");
-          } }
+          }
+        }
+        // handleException()
+        //   moveToErrorFolder();
+        //   generateErrorDescriptionFile();
+        //   deleteOriginalFile();
         if (e.getMessage().split("\n")[0].equals("Unknown type of Person in file ")) {
           try {
             String pathToFile = e.getMessage().split("\n")[1];
@@ -47,8 +52,15 @@ public class Dispatcher extends Thread {
                 if (i == 0) {
                   dist = Paths.get("./target/Errors/OriginalFiles/" + fileName);
                 } else {
-                  dist = Paths.get("./target/Errors/OriginalFiles/" + fileName.split("\\.")[0] + "(" + i
-                          + ")" + "." + fileName.split("\\.")[1]);
+                  dist =
+                      Paths.get(
+                          "./target/Errors/OriginalFiles/"
+                              + fileName.split("\\.")[0]
+                              + "("
+                              + i
+                              + ")"
+                              + "."
+                              + fileName.split("\\.")[1]);
                 }
                 Files.copy(source, dist);
                 break;
@@ -69,8 +81,16 @@ public class Dispatcher extends Thread {
                   new File(
                       "./target/Errors/" + fileName.split("\\.")[0] + "(" + i + ")" + "_Err.txt");
               FileWriter fw = new FileWriter(errFile);
-              fw.write(e.getMessage().split("\n")[0] + fileName.split("\\.")[0] + "(" + i + ")" + "."
-                      + fileName.split("\\.")[1] + "\nTime: " + cl.getTime());
+              fw.write(
+                  e.getMessage().split("\n")[0]
+                      + fileName.split("\\.")[0]
+                      + "("
+                      + i
+                      + ")"
+                      + "."
+                      + fileName.split("\\.")[1]
+                      + "\nTime: "
+                      + cl.getTime());
               fw.close();
             }
           } catch (IOException ioe) {
@@ -81,12 +101,24 @@ public class Dispatcher extends Thread {
         }
 
         int i = 1;
-        while (Files.exists(Paths.get("./target/Errors/" + e.getMessage().charAt(0) + e.getMessage().charAt(1)
-                + "_" + i + ".txt"))) {
+        while (Files.exists(
+            Paths.get(
+                "./target/Errors/"
+                    + e.getMessage().charAt(0)
+                    + e.getMessage().charAt(1)
+                    + "_"
+                    + i
+                    + ".txt"))) {
           i++;
         }
-        File errFile = new File("./target/Errors/" + e.getMessage().charAt(0) + e.getMessage().charAt(1)
-                + "_" + i + ".txt");
+        File errFile =
+            new File(
+                "./target/Errors/"
+                    + e.getMessage().charAt(0)
+                    + e.getMessage().charAt(1)
+                    + "_"
+                    + i
+                    + ".txt");
         try {
           FileWriter fw = new FileWriter(errFile);
           Calendar cl = Calendar.getInstance();
@@ -98,16 +130,18 @@ public class Dispatcher extends Thread {
         System.err.println("Dispatcher: New error in ./target/Errors");
         continue;
       }
+
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
-        return;
+        throw new IllegalStateException(e);
       }
     }
   }
 
   private void updateAndPullOutCommands() throws Exception {
-    PeopleService plService = new PeopleService(pathToPersonsFolder, pathToPersonsFolder); // ids in Persons Folder
+    PeopleService plService =
+        new PeopleService(pathToPersonsFolder, pathToPersonsFolder); // ids in Persons Folder
     while (commandsForPeopleService.size() != 0) {
       Command cmd = commandsForPeopleService.poll();
       plService.processTheCommand(cmd);
