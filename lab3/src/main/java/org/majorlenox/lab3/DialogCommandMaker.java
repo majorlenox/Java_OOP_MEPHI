@@ -1,4 +1,6 @@
-import persons.Person;
+package org.majorlenox.lab3;
+
+import org.majorlenox.lab3.persons.Person;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,8 +16,8 @@ import java.util.Scanner;
 public class DialogCommandMaker {
 
   public static String[] availableCommands = {
-    "DialogCommandMaker:\nChoose which command you want to create",
-    "Quit from DialogCommandMaker\n---Commands---------------",
+    "org.majorlenox.lab3.DialogCommandMaker:\nChoose which command you want to create",
+    "Quit from org.majorlenox.lab3.DialogCommandMaker\n---Commands---------------",
     "Set new pathToManagementFolder",
     "End",
     "Create Person",
