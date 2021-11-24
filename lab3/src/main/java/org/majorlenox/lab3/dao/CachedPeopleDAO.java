@@ -2,15 +2,12 @@ package org.majorlenox.lab3.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.majorlenox.lab3.persons.Person;
-import org.majorlenox.lab3.persons.Student;
-import org.majorlenox.lab3.persons.Teacher;
 import org.majorlenox.lab3.server.StaticCacheReader;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CachedPeopleDAO implements Dao {
 
@@ -22,7 +19,7 @@ public class CachedPeopleDAO implements Dao {
   }
 
   @Override
-  public Set<Person> setOfPersons() {
+  public HashSet<Person> setOfPersons() {
     return new HashSet<>(mapPersons.values());
   }
 
@@ -44,14 +41,16 @@ public class CachedPeopleDAO implements Dao {
   @Override
   public void saveCache(String filepath) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.writeValue(new File(filepath), mapPersons);
+    String directory = filepath.substring(0, filepath.lastIndexOf('/')); // only directories in the filepath
+    Files.createDirectories(Paths.get(directory));
+    objectMapper.writeValue(new File(filepath), mapPersons.values());
   }
 
   @Override
   public void loadCache(String filepath) throws IOException {
     StaticCacheReader CR = StaticCacheReader.getInstance();
-    ObjectMapper objectMapper = new ObjectMapper();
-    mapPersons = CR.readPersons(filepath);
+    ArrayList<Person> listOfPersons = CR.readPersons(filepath);
+
   }
 
 }

@@ -2,15 +2,19 @@ package org.majorlenox.lab3.server;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.majorlenox.lab3.dao.CachedPeopleDAO;
+import org.majorlenox.lab3.dao.Dao;
 import org.majorlenox.lab3.persons.Person;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class StaticCacheReader {
 
-    private static StaticCacheReader instance;
+    private static final StaticCacheReader instance;
 
     private StaticCacheReader(){}
 
@@ -27,11 +31,11 @@ public class StaticCacheReader {
         return instance;
     }
 
-    public HashMap<Long,Person> readPersons(String filename) throws IOException {
+    public ArrayList<Person> readPersons(String filename) throws IOException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            HashMap<Long, Person> mapPersons = new  HashMap<Long, Person>();
-            return (objectMapper.readValue(new File(filename), new TypeReference<HashMap<Long,Person>>(){}));
+            TypeReference<ArrayList<Person>> typeRef = new TypeReference<ArrayList<Person>>(){};
+            return (objectMapper.readValue(new File(filename), typeRef));
         } catch (IOException e) {
             System.err.println(e.getMessage());
             throw e;

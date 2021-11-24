@@ -2,15 +2,17 @@ package org.majorlenox.lab3.server;
 
 import org.majorlenox.lab3.dao.CachedPeopleDAO;
 import org.majorlenox.lab3.dao.Dao;
+import org.majorlenox.lab3.algorithms.Pair;
 import org.majorlenox.lab3.persons.Person;
 import org.majorlenox.lab3.persons.Student;
+import org.majorlenox.lab3.persons.Teacher;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 public class PeopleService {
 
-    private final Dao peopleDao;
+    private Dao peopleDao;
     private long id = 0;
 
         public PeopleService() {
@@ -25,19 +27,88 @@ public class PeopleService {
             peopleDao.saveCache(filepath);
         }
 
-        public void loadCache(String filepath) throws IOException {
+        public String loadCache(String filepath) throws IOException {
+            String directory = "";
+            if (peopleDao.setOfPersons().size()!=0){
+            directory = filepath.substring(0, filepath.lastIndexOf('/'))
+                    + "/PreviousCache.json"; // for previous cache
+            peopleDao.saveCache(directory);
+            }
             peopleDao.loadCache(filepath);
             for (Person person : peopleDao.setOfPersons()){
-                if (id < person.getID()){id = person.getID();}
+                if (id < person.getID()){id = person.getID();}  // max id from current persons
             }
+
+            return directory;
         }
 
-        public void createStudent(String fullName, int yearOfBirth, String telephoneNumber, long id, HashMap<Person.Subjects, Double> grades) throws NullPointerException{
+        public long createStudent(String fullName, int yearOfBirth, String telephoneNumber, HashMap<Person.Subjects, Double> grades) throws NullPointerException{
             Student student = new Student(fullName, yearOfBirth, telephoneNumber, grades);
-            student.setId(id);
+            student.setId(++id);
             peopleDao.add(student);
+            return id;
         }
-/*
+
+        public long createTeacher(String fullName, int yearOfBirth, String telephoneNumber, Person.Subjects subject, String workingHours) throws NullPointerException{
+            Teacher teacher = new Teacher(fullName, yearOfBirth, telephoneNumber, subject, workingHours);
+            teacher.setId(++id);
+            peopleDao.add(teacher);
+            return id;
+        }
+
+        public String makeListOfPersons(){
+            HashSet<Person> setOfPersons = peopleDao.setOfPersons();
+            ArrayList<Pair<Long, Person>> listIdPerson = new ArrayList<Pair<Long, Person>>();
+            for (Person person : setOfPersons){
+                listIdPerson.add(new Pair<Long, Person>(person.getID(), person));
+            }
+            listIdPerson.sort(new Comparator<Pair<Long, Person>>() {
+                @Override
+                public int compare(Pair<Long, Person> o1, Pair<Long, Person> o2) {
+                    if (o1.first < o2.first) {
+                        return -1;
+                    } else {
+                        if (o1.first > o2.first) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                }
+            });
+            return fromListToString(listIdPerson);
+        }
+
+        private String fromListToString(ArrayList<Pair<Long, Person>> list){
+            StringBuilder strOut = new StringBuilder();
+            for (Pair<Long, Person> personPair : list){
+                strOut.append("ID ");
+                strOut.append(personPair.first);
+                strOut.append(": ");
+                if (personPair.second.getClass() == Student.class){
+                    strOut.append("Student - ");
+                    strOut.append(personPair.second.getFullName());
+                }else {
+                    if (personPair.second.getClass() == Teacher.class) {
+                        strOut.append("Teacher - ");
+                        strOut.append(personPair.second.getFullName());
+                        strOut.append(", Subject: ");
+                        strOut.append(((Teacher)personPair.second).getSubject());
+                    }else{
+                        strOut.append("Unknown - ");
+                        strOut.append(personPair.second.getFullName());
+                    }
+                }
+                strOut.append(", Telephone number: ");
+                strOut.append(personPair.second.getTelephoneNumber());
+                strOut.append("\n");
+            }
+            return strOut.toString();
+        }
+
+
+        /*
+
+
         public UUID createStudent(String fullName, Date birthDate, String phoneNumber, List<Subject> subjects, Map<Subject, Double> marks) {
             Student student = new Student(fullName, birthDate, phoneNumber, subjects, marks);
             try {
