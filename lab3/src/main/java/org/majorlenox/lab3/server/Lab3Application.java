@@ -1,8 +1,5 @@
 package org.majorlenox.lab3.server;
 
-import org.majorlenox.lab3.dao.CachedPeopleDAO;
-import org.majorlenox.lab3.dao.Dao;
-import org.majorlenox.lab3.persons.Person;
 import org.majorlenox.lab3.persons.Student;
 import org.majorlenox.lab3.persons.Teacher;
 import org.springframework.boot.SpringApplication;
@@ -28,9 +25,9 @@ public class Lab3Application {
         return "Server on.";
     }
 
-    @GetMapping ("/save")
-    public String saveCache(@RequestParam String filepath){
-        try{
+    @GetMapping("/save")
+    public String saveCache(@RequestParam String filepath) {
+        try {
             peopleService.saveCache(filepath);
             return "Cache of persons has been saved in a file: " + filepath;
         } catch (IOException e) {
@@ -40,11 +37,13 @@ public class Lab3Application {
     }
 
     @GetMapping("/load")
-    public String loadCache(@RequestParam String filepath){
-        try{
+    public String loadCache(@RequestParam String filepath) {
+        try {
             String message = "Cache of persons has been loaded from a file: " + filepath + "\n";
             String filepathPrev = peopleService.loadCache(filepath);
-            if (!filepathPrev.equals("")){ message += "The previous cache was saved in a file " + filepathPrev + "\n"; }
+            if (!filepathPrev.equals("")) {
+                message += "The previous cache was saved in a file " + filepathPrev + "\n";
+            }
             return message;
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,34 +51,40 @@ public class Lab3Application {
         }
     }
 
+    @GetMapping("/del")
+    public String deletePerson(@RequestParam long id) {
+        if (peopleService.getPerson(id).isEmpty()) {
+            return "Person with id =" + id + " doesn't exist";
+        }
+        String name = peopleService.getPerson(id).get().getFullName();
+        peopleService.deletePerson(id);
+        return "Person " + name + "with id =" + id + " was successfully deleted";
+    }
+
     @PostMapping("/create/student")
-    public String createStudent (@RequestBody Student student){
+    public String createStudent(@RequestBody Student student) {
         try {
             long id = peopleService.createStudent(student.getFullName(), student.getYearOfBirth(), student.getTelephoneNumber(), student.getGrades());
             return "Student - " + student.getFullName() + " was successfully created and now has id = " + id;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @PostMapping("/create/teacher")
-    public String createStudent (@RequestBody Teacher teacher){
+    public String createStudent(@RequestBody Teacher teacher) {
         try {
             long id = peopleService.createTeacher(teacher.getFullName(), teacher.getYearOfBirth(), teacher.getTelephoneNumber(), teacher.getSubject(), teacher.getWorkingHours());
             return "Teacher - " + teacher.getFullName() + " was successfully created and now has id = " + id;
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @GetMapping("/show")
-    public String showAllPersons (){
+    public String showAllPersons() {
         return peopleService.makeListOfPersons();
     }
-
-
-
-
 
 
 }

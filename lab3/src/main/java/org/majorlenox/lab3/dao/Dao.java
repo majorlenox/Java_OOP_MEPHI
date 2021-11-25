@@ -8,16 +8,16 @@ import java.util.Optional;
 
 public interface Dao {
 
-  Optional<Person> getPerson(long id);
+    Optional<Person> getPerson(long id);
 
-  HashSet<Person> setOfPersons();
+    HashSet<Person> setOfPersons();
 
-  void add(Person person) throws NullPointerException;
+    void add(Person person) throws NullPointerException;
 
-  void del(long id);
+    void del(long id);
 
-  void saveCache(String filepath) throws IOException;
+    void saveCache(String filepath) throws IOException;
 
-  void loadCache(String filepath) throws IOException;
+    void loadCache(String filepath) throws IOException;
 
 }
