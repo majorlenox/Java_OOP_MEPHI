@@ -2,7 +2,7 @@ package org.majorlenox.lab3.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.majorlenox.lab3.persons.Person;
-import org.majorlenox.lab3.server.StaticCacheReader;
+import org.majorlenox.lab3.server.EnumCacheReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +51,11 @@ public class CachedPeopleDAO implements Dao {
 
     @Override
     public void loadCache(String filepath) throws IOException {
+        /*  Static singleton usage
         StaticCacheReader CR = StaticCacheReader.getInstance();
         mapPersons = CR.readPersons(filepath);
+         */
+        mapPersons = EnumCacheReader.INSTANCE.readPersons(filepath);
     }
 
 }

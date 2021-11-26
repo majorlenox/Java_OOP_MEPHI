@@ -18,8 +18,16 @@ public class Teacher extends Person {
         return subject;
     }
 
+    public void setSubject(Subjects subject) {
+        this.subject = subject;
+    }
+
     public String getWorkingHours() {
         return workingHours;
+    }
+
+    public void setWorkingHours(String workingHours) {
+        this.workingHours = workingHours;
     }
 
 }

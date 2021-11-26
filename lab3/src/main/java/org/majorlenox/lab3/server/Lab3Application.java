@@ -2,6 +2,7 @@ package org.majorlenox.lab3.server;
 
 import org.majorlenox.lab3.persons.Student;
 import org.majorlenox.lab3.persons.Teacher;
+import org.majorlenox.lab3.structures.ModifiedData;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -46,19 +47,26 @@ public class Lab3Application {
             }
             return message;
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @GetMapping("/get")
+    public String getPerson(@RequestParam long id) {
+        if (peopleService.getPerson(id).isEmpty()) {
+            return "Person with id = " + id + " doesn't exist";
+        }
+        return peopleService.getPersonInfo(id);
     }
 
     @GetMapping("/del")
     public String deletePerson(@RequestParam long id) {
         if (peopleService.getPerson(id).isEmpty()) {
-            return "Person with id =" + id + " doesn't exist";
+            return "Person with id = " + id + " doesn't exist";
         }
         String name = peopleService.getPerson(id).get().getFullName();
         peopleService.deletePerson(id);
-        return "Person " + name + "with id =" + id + " was successfully deleted";
+        return "Person " + name + " with id = " + id + " was successfully deleted";
     }
 
     @PostMapping("/create/student")
@@ -77,6 +85,19 @@ public class Lab3Application {
             long id = peopleService.createTeacher(teacher.getFullName(), teacher.getYearOfBirth(), teacher.getTelephoneNumber(), teacher.getSubject(), teacher.getWorkingHours());
             return "Teacher - " + teacher.getFullName() + " was successfully created and now has id = " + id;
         } catch (NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/modify")
+    public String modifyPerson(@RequestBody ModifiedData md) {
+        try {
+            if (peopleService.getPerson(md.id).isEmpty()) {
+                return "Person to modify doesn't exist";
+            }
+            peopleService.modifyPerson(md);
+            return "Person with id = " + md.id + " was successfully modified";
+        } catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

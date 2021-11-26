@@ -1,7 +1,6 @@
 package org.majorlenox.lab3.structures;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,10 +22,9 @@ public class PersonArrayDeserializer extends StdDeserializer<HashMap<Long, Perso
     }
 
     @Override
-    public HashMap<Long, Person> deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+    public HashMap<Long, Person> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
-        HashMap<Long, Person> mapPerson = new HashMap<Long, Person>();
+        HashMap<Long, Person> mapPerson = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
         for (int i = 0; i < node.size(); i++) {
             if (node.get(i).has("grades")) { // this means that it is a Student
