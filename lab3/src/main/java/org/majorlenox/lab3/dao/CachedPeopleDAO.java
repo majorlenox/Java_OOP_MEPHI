@@ -20,6 +20,10 @@ public class CachedPeopleDAO implements Dao {
         this.mapPersons = new HashMap<>();
     }
 
+    public CachedPeopleDAO(HashMap<Long, Person> mapPersons) {
+        this.mapPersons = mapPersons;
+    }
+
     @Override
     public Optional<Person> getPerson(long id) {
         return Optional.ofNullable(mapPersons.get(id));
