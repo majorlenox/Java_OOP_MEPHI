@@ -26,7 +26,7 @@ public class Lab3Application {
         return "Server on.";
     }
 
-    @GetMapping("/save")
+    @PostMapping("/save")
     public String saveCache(@RequestParam String filepath) {
         try {
             peopleService.saveCache(filepath);
@@ -37,7 +37,7 @@ public class Lab3Application {
         }
     }
 
-    @GetMapping("/load")
+    @PostMapping("/load")
     public String loadCache(@RequestParam String filepath) {
         try {
             String message = "Cache of persons has been loaded from a file: " + filepath + "\n";
@@ -59,7 +59,7 @@ public class Lab3Application {
         return peopleService.getPersonInfo(id);
     }
 
-    @GetMapping("/del")
+    @PostMapping("/del")
     public String deletePerson(@RequestParam long id) {
         if (peopleService.getPerson(id).isEmpty()) {
             return "Person with id = " + id + " doesn't exist";
@@ -106,6 +106,4 @@ public class Lab3Application {
     public String showAllPersons() {
         return peopleService.makeListOfPersons();
     }
-
-
 }
